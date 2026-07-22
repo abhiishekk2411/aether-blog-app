@@ -3,6 +3,7 @@ import NavBar from '../components/NavBar.jsx'
 import Header from '../components/Header.jsx'
 import BlogList from '../components/BlogList.jsx'
 import Newsletter from '../components/Newsletter.jsx'
+import Footer from '../components/Footer.jsx'
 
 const Home = () => {
   return (
@@ -11,6 +12,7 @@ const Home = () => {
       <Header/>
       <BlogList/>
       <Newsletter/>
+      <Footer/>
     </>
   )
 }
