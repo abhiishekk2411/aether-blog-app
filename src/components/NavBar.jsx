@@ -13,7 +13,6 @@ const NavBar = () => {
                 <img src={assets.arrow} alt="arrow" className='w-3'/>
             </button>
         </div>
-      
     </div>
   )
 }
