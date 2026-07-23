@@ -19,8 +19,8 @@ const Blog = () => {
   }
 
   useEffect(() => {
-    fetchBlogData(),
-    fetchComments
+    fetchBlogData();
+    fetchComments();
   }, [id])
 // agar data nahi mila to loading wala chal jayega
   return data ? (
