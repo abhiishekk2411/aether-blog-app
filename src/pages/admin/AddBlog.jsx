@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { assets } from '../../assets/assets';
+import { blogCategories } from '../../assets/assets';
 
 const AddBlog = () => {
 
@@ -7,8 +9,14 @@ const AddBlog = () => {
   const [subTitle, setSubTitle] = useState('');
   const [category, setCategory] = useState('Startup');
   const [isPublished, setIsPublished] = useState(false);
+  const [description, setDescription] = useState('');
 
-  const onSubmitHandler=async(e)=>{
+  const generateContent = () => {
+    // AI generation logic yahan aayega baad mein
+    console.log('Generate clicked');
+  }
+
+  const onSubmitHandler = async (e) => {
     e.preventDefault();
   }
 
@@ -18,9 +26,40 @@ const AddBlog = () => {
         <p>Upload thumbnail</p>
 
         <label htmlFor="image">
-          <img src={!image ? assets.upload_area:URL.createObjectURL(image)} alt="" className='mt-2 h-16 rounded cursor-pointer' />
-          <input onChange={(e)=>setImage(e.target.value)} value={Files[0]} type="file" id='image' hidden required />
+          <img src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="" className='mt-2 h-16 rounded cursor-pointer' />
+          <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image' hidden required />
         </label>
+        <p className='mt-4'>Blog title</p>
+        <input type="text" placeholder='Type here' required className='w-full max-w-lg mt-2 p-2 border border-gray-300 outline-none rounded' onChange={e => setTitle(e.target.value)} value={title} />
+
+        <p className='mt-4'>Sub title</p>
+        <input type="text" placeholder='Type here' required className='w-full max-w-lg mt-2 p-2 border border-gray-300 outline-none rounded' onChange={e => setSubTitle(e.target.value)} value={subTitle} />
+
+        <p className='mt-4'>Blog Description</p>
+        <div className='max-w-lg h-74 pb-16 sm:pb-10 pt-2 relative'>
+          <textarea
+            value={description}
+            onChange={e => setDescription(e.target.value)}
+            placeholder='Write your blog description here'
+            className='w-full h-full p-2 border border-gray-300 rounded outline-none'
+          />
+          <button type='button' onClick={generateContent} className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer'>Generate with AI</button>
+        </div>
+        <p className='mt-4'>Blog category</p>
+        <select onChange={e => setCategory(e.target.value)} className='mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded '>
+          <option value="">Select category</option>
+          {blogCategories.map((item, index) => {
+            return <option key={index} value={item}>{item}</option>
+          })}
+        </select>
+        <div className='flex gap-2 mt-4'>
+          <p>Publish Now</p>
+          <input type="checkbox" checked={isPublished} className='scale-125
+cursor-pointer' onChange={e => setIsPublished(e.target.checked)} />
+        </div>
+
+        <button type="submit" className='mt-8 w-40 h-10 bg-primary text-white
+rounded cursor-pointer text-sm'>Add Blog</button>
 
       </div>
 
