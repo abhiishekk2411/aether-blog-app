@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
+import dns from "dns";
 
+dns.setDefaultResultOrder("ipv4first");
 
 const connectDB = async () => {
-    try {
-        mongoose.connection.on("connected", () => {
-            console.log("Database Connected");
-        });
+  try {
+    mongoose.connection.on("connected", () => {
+      console.log("Database Connected");
+    });
 
         await mongoose.connect(`${process.env.MONGODB_URI}/quickblog`);
 

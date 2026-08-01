@@ -1,7 +1,8 @@
-import express from 'express';
 import 'dotenv/config';
 import cors from 'cors';
-import connectDB from './configs/db.js';
+import express from 'express';
+import connectDB from '../configs/db.js';
+import adminRouter from '../routes/adminRoutes.js';
 
 const app=express();
 await connectDB();
@@ -11,9 +12,11 @@ app.use(express.json());
 
 //routes---
 app.get('/',(req,res)=>res.send("API IS WORKING"));
+app.use("/api/admin",adminRouter);
 
-const PORT=process.env.PORT || 3000;
+const PORT=process.env.PORT || 4000; 
 
-app.listen(PORT,()=>{
+
+app.listen(PORT, ()=>{
     console.log(`Server is running at PORT ${PORT}`);
 })
