@@ -1,14 +1,14 @@
 import fs from 'fs';
-import imageKit from '../configs/imageKit';
-import Blog from '../models/Blog';
+import imageKit from '../configs/imageKit.js';
+import Blog from '../models/Blog.js';
 
 
 export const addBlog=async(req,res)=>{
     try{
-        const {title,subtitle,description,category,image,isPublished}=JSON.parse(req.body.blog);
-        const imageFile=req.files;
+        const {title,subtitle,description,category,isPublished}=JSON.parse(req.body.blog);
+        const imageFile=req.file;
 
-        if(!title || !description || !category || !image || !isPublished){
+        if(!title || !description || !category || !imageFile || !isPublished){
             return res.status(400).json({message:"All fields are required"});
         }
 
@@ -24,8 +24,8 @@ export const addBlog=async(req,res)=>{
         const optimizedImageUrl=imageKit.url({
             path:response.filePath,
             transformation:[
-                {quality:auto},                  //auto compression
-                {format:webp},                   //convert to webp format
+                {quality:"auto"},                  //auto compression
+                {format:"webp"},                   //convert to webp format
                 {width:1280}                     //width resizing
             ]
         })
@@ -38,7 +38,7 @@ export const addBlog=async(req,res)=>{
         res.json({success:true,message: "blog uploaded successfuly"});
     }
     catch(error){
-         res.json({success:false,message: "err.message"});
+         res.json({success:false,message: error.message});
 
      }
 }
