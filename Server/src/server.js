@@ -14,7 +14,7 @@ app.use(express.json());
 //routes---
 app.get('/',(req,res)=>res.send("API IS WORKING"));
 app.use("/api/admin",adminRouter);
-app.use("/api/blog",blogRouter);
+app.use("/api/blogs",blogRouter);
 
 
 const PORT=process.env.PORT || 4000; 

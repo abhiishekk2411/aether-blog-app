@@ -9,7 +9,7 @@ const Login = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post('/api/admin/login', { email, password });
+      const { data } = axios.post('/api/admin/login', { email, password });
       if (data.success) {
         setToken(data.token)
         localStorage.setItem('token', data.token)
