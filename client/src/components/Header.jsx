@@ -1,7 +1,24 @@
 import React from 'react'
 import { assets } from '../assets/assets.js'
+import { useAppContext } from '../context/context.jsx';
+import { useRef } from 'react';
+
 
 const Header = () => {
+
+    const { setInput, input } = useAppContext();
+    const inputRef = useRef();
+
+    const onSubmitHandler = async (e) => {
+        e.preventDefault();
+        setInput(inputRef.current.value);
+    }
+
+    const onClear=async(e)=>{
+        setInput('');
+        inputRef.current.value='';
+    }
+
     return (
         <div className='mx-8 sm:mx-16 xl:mx-24 relative'>
             <div className='text-center mt-20 mb-8'>
@@ -13,11 +30,16 @@ const Header = () => {
                 </div>
                 <h1 className='text-3xl font-semibold sm:text-6xl sm:leading-16 text-gray-700'>Your own <span className='text-blue-800'>blogging</span> <br /> platform.</h1>
                 <p className='m-auto my-8 sm:my-8 max-w-2xl max-sm:text-xs text-gray-500'>This is your space to think out loud, to share what matters, and to write without filters. <br /> Whether it's one word or a thousand, your story starts right here.</p>
-                <form action="" className='flex justify-between max-w-lg max-sm:scale-75 mx-auto border border-gray-300 bg-white rounded overflow-hidden'>
-                    <input required type="text" className='w-full pl-4 outline-none' placeholder='Search for Blogs' />
+                <form onSubmit={onSubmitHandler} action="" className='flex justify-between max-w-lg max-sm:scale-75 mx-auto border border-gray-300 bg-white rounded overflow-hidden'>
+                    <input ref={inputRef} required type="text" className='w-full pl-4 outline-none' placeholder='Search for Blogs' />
                     <button className='bg-primary text-white px-8 py-2 m-1.5 rounded hover:scale-105 transition-all cursor-pointer' type='Submit'>Search</button>
                 </form>
             </div>
+
+            <div className='text-center'>{
+                input && <button onClick={onClear} className='border font-light text-xs py-1 px-3 rounded-sm shadow-custom-sm cursor-pointer'>Clear Search</button>}
+            </div>
+
             <img src={assets.gradientBackground} className='absolute -top-50 -z-1 opacity-50' alt="background" />
         </div>
     )

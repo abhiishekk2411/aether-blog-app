@@ -6,17 +6,17 @@ const Login = () => {
 
   const { axios, setToken } = useAppContext();
 
-  const handleSubmit = (e) => {
+  const handleSubmit =async(e) => {
     e.preventDefault();
     try {
-      const { data } = axios.post('/api/admin/login', { email, password });
+      const { data } =await axios.post('/api/admin/login', { email, password });
       if (data.success) {
         setToken(data.token)
         localStorage.setItem('token', data.token)
         axios.defaults.headers.common['Authorization'] = data.token;
       }
       else {
-        toast.error(error.message);
+        toast.error(data.message);
 
       }} 
     catch (error) {

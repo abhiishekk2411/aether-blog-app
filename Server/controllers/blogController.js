@@ -98,26 +98,24 @@ export const togglePublish = async (req, res) => {
     }
 }
 
-export const addComment=async(req,res)=>{
+export const addComment = async (req, res) => {
     try {
-        const {blog,name,comment}=req.body;
-        await Comment.create({blog,name,content});
-        res.json({message:true,message:"Comment added successfully for review"});
+        const { blog, name, content } = req.body;
+        await Comment.create({ blog, name, content });
+        res.json({ success: true, message: "Comment added successfully for review" });
     } catch (error) {
         res.json({ success: false, message: error.message });
-        
     }
 }
 
-export const getBlogComments=async(req,res)=>{
+export const getBlogComments = async (req, res) => {
     try {
-        const blogId=req.body;
-        const comments=await Comment.find({blog:blogId,isApproved:true.sort({iscreatedAt:-1})});
-        res.json({success:true,comments});
-        
+        const { blogId } = req.body;
+        const comments = await Comment.find({ blog: blogId, isApproved: true })
+                                      .sort({ createdAt: -1 });
+        res.json({ success: true, comments });
     } catch (error) {
         res.json({ success: false, message: error.message });
-        
     }
 }
 

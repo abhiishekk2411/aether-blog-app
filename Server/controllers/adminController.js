@@ -2,8 +2,6 @@ import jwt from "jsonwebtoken";
 import Comment from "../models/comment.js";
 import Blog from "../models/Blog.js";
 
-
-
 export const adminLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
@@ -15,7 +13,6 @@ export const adminLogin = async (req, res) => {
         res.json({ success: true, token })
     } catch (error) {
         res.json({ success: false, message: error.message });
-
     }
 }
 
@@ -25,7 +22,6 @@ export const getAllBlogsAdmin = async (req, res) => {
         res.json({ success: true, blogs });
     } catch (error) {
         res.json({ success: false, message: error.message });
-
     }
 }
 
@@ -33,10 +29,8 @@ export const getAllComments = async (req, res) => {
     try {
         const comments = await Comment.find({}).populate("blog").sort({ createdAt:-1 });
         res.json({ success: true, comments });
-
     } catch (error) {
         res.json({ success: false, message: error.message });
-
     }
 }
 
@@ -50,31 +44,29 @@ export const getDashboard = async (req, res) => {
             blogs, comments, drafts, recentBlogs
         }
         res.json({ success: true, dashboardData });
-
-
     } catch (error) {
         res.json({ success: false, message: error.message });
-
     }
 }
 
-export const deleteCommentbyId=async(req,res)=>{
+export const deleteCommentbyId = async(req, res) => {
     try {
-        const {id}=req.body;
+        const { id } = req.body;
         await Comment.findByIdAndDelete(id);
-        res.json({message:true,message:"Comment deleted successfully"});
+        // FIXED: Changed first 'message' to 'success'
+        res.json({ success: true, message: "Comment deleted successfully" });
     } catch (error) {
-        res.json({success:false,message:error.message});
+        res.json({ success: false, message: error.message });
     }
 }
 
-
-export const approveCommentbyId=async(req,res)=>{
+export const approveCommentbyId = async(req, res) => {
     try {
-        const {id}=req.body;
-        await Comment.findByIdAndUpdate(id,{isApproved:true});
-        res.json({message:true,message:"Comment Approved SuccessFully"});
+        const { id } = req.body;
+        await Comment.findByIdAndUpdate(id, { isApproved: true });
+        // FIXED: Changed first 'message' to 'success'
+        res.json({ success: true, message: "Comment Approved SuccessFully" });
     } catch (error) {
-        res.json({success:false,message:error.message});
+        res.json({ success: false, message: error.message });
     }
 }
