@@ -1,4 +1,5 @@
 import fs from 'fs';
+import openRouter from "../configs/openrouter.js";
 import imageKit from '../configs/imageKit.js';
 import Blog from '../models/Blog.js';
 import Comment from '../models/comment.js';
@@ -119,3 +120,30 @@ export const getBlogComments = async (req, res) => {
     }
 }
 
+export const generateBlogContent = async (req, res) => {
+    try {
+        const { title, subTitle } = req.body;
+
+        if (!title) {
+            return res.json({ success: false, message: "Please enter a blog title first" });
+        }
+
+        const prompt = `Write an engaging and professional blog description/intro based on the title: "${title}" and subtitle: "${subTitle}". Keep it between 50 to 80 words.`;
+
+        const completion = await openRouter.chat.completions.create({
+            model: "openrouter/free", 
+            messages: [
+                { role: "system", content: "You are a professional blog writer." },
+                { role: "user", content: prompt }
+            ],
+        });
+
+        const generatedText = completion.choices[0].message.content;
+
+        res.json({ success: true, text: generatedText });
+
+    } catch (error) {
+        console.error("AI Generation Error:", error.message);
+    res.json({ success: false, message: "Failed to generate content" });
+    }
+}

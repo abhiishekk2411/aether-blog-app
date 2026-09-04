@@ -2,20 +2,42 @@ import React from 'react'
 import { comments_data } from '../../assets/assets'
 import { useState , useEffect} from 'react';
 import CommentTableItem from '../../components/admin/CommentTableItem';
+import { useAppContext } from '../../context/context';
+import toast from 'react-hot-toast';
 
 const Comments = () => {
 
   const [comments, setComments] = useState([]);
   const [filter, setFilter] = useState('Not Approved');
+  const {axios} = useAppContext();
 
   const fetchComments = async () => {
-    setComments(comments_data);
+    try {
+      const {data} = await axios.get('/api/admin/comments')
+      data.success ? setComments(data.comments) : toast.error(data.message)
+    } catch (error) {
+      toast.error(error.message)
+    }
+  }
 
+  const deleteComment = async (commentId) => {
+    try {
+      const { data } = await axios.post('/api/blogs/delete-comment', { id: commentId });
+      
+      if (data.success) {
+          toast.success("Comment deleted");
+          fetchComments(); 
+      } else {
+          toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
   }
 
   useEffect(() => {
     fetchComments();
-  })
+  }, [])
 
   return (
     <div className='flex-1 pt-5 px-5 sm:pt-12 sm:pl-16 bg-blue-50/50'>
@@ -52,7 +74,7 @@ const Comments = () => {
               if (filter === "Approved") return comment.isApproved === true;
               return comment.isApproved === false;
             }).map((comment, index) => <CommentTableItem key={comment._id}
-              comment={comment} index={index + 1} fetchComments={fetchComments} />)}
+              comment={comment} index={index + 1} fetchComments={fetchComments} deleteComment={deleteComment} />)}
 
           </tbody>
         </table>

@@ -4,7 +4,8 @@ import { useAppContext } from '../../context/context';
 import toast from 'react-hot-toast';
 
 const AddBlog = () => {
-  const { axios, token } = useAppContext(); 
+  const { axios, token } = useAppContext();
+  const [loading, setLoading] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [image, setImage] = useState(false);
   const [title, setTitle] = useState('');
@@ -13,15 +14,11 @@ const AddBlog = () => {
   const [isPublished, setIsPublished] = useState(false);
   const [description, setDescription] = useState('');
 
-  const generateContent = () => {
-    console.log('Generate clicked');
-  }
-
   const onSubmitHandler = async (e) => {
     try {
       e.preventDefault();
       setIsAdding(true);
-      
+
       const blog = {
         title,
         subTitle,
@@ -29,18 +26,18 @@ const AddBlog = () => {
         category,
         isPublished
       }
-      
+
       const formData = new FormData();
       formData.append('blog', JSON.stringify(blog));
       formData.append('image', image);
 
       const { data } = await axios.post('/api/blogs/add', formData, {
         headers: {
-          authorization: `Bearer ${token}` 
+          authorization: `Bearer ${token}`
         }
       });
-      
-      
+
+
       if (data.success) {
         toast.success(data.message);
         setImage(false);
@@ -53,9 +50,38 @@ const AddBlog = () => {
         toast.error(data.message);
       }
     } catch (error) {
-      toast.error(error.message);      
+      toast.error(error.message);
     } finally {
       setIsAdding(false);
+    }
+  }
+
+  const generateContent = async () => {
+    if (!title) {
+      toast.error("Please enter a Blog Title first");
+      return;
+    }
+
+    const loadingToast = toast.loading("Generating content...");
+    setLoading(true);
+    try {
+      const { data } = await axios.post('/api/blogs/generate-content', { title, subTitle }, {
+          headers: { authorization: token }
+      });
+      if (data.success) {
+        setDescription(data.text);
+        toast.dismiss(loadingToast);
+        toast.success("Content generated!");
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.dismiss(loadingToast);
+      toast.error(error.message);
+    }
+    finally {
+      setLoading(false);
     }
   }
 
@@ -68,7 +94,7 @@ const AddBlog = () => {
           <img src={!image ? assets.upload_area : URL.createObjectURL(image)} alt="" className='mt-2 h-16 rounded cursor-pointer' />
           <input onChange={(e) => setImage(e.target.files[0])} type="file" id='image' hidden required />
         </label>
-        
+
         <p className='mt-4'>Blog title</p>
         <input type="text" placeholder='Type here' required className='w-full max-w-lg mt-2 p-2 border border-gray-300 outline-none rounded' onChange={e => setTitle(e.target.value)} value={title} />
 
@@ -83,9 +109,14 @@ const AddBlog = () => {
             placeholder='Write your blog description here'
             className='w-full h-full p-2 border border-gray-300 rounded outline-none'
           />
-          <button type='button' onClick={generateContent} className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer'>Generate with AI</button>
+          {loading && (
+            <div className='absolute top-0 bottom-0 right-0 left-0 flex items-center justify-center bg-black/10 mt-2'>
+              <div className='w-8 h-8 rounded-full border-t-white border-2 animate-spin'></div>
+            </div>
+          )}
+          <button disabled={loading} type='button' onClick={generateContent} className='absolute bottom-1 right-2 ml-2 text-xs text-white bg-black/70 px-4 py-1.5 rounded hover:underline cursor-pointer'>Generate with AI</button>
         </div>
-        
+
         <p className='mt-4'>Blog category</p>
         <select value={category} onChange={e => setCategory(e.target.value)} className='mt-2 px-3 py-2 border text-gray-500 border-gray-300 outline-none rounded '>
           <option value="">Select category</option>
@@ -93,7 +124,7 @@ const AddBlog = () => {
             return <option key={index} value={item}>{item}</option>
           })}
         </select>
-        
+
         <div className='flex gap-2 mt-4'>
           <p>Publish Now</p>
           <input type="checkbox" checked={isPublished} className='scale-125 cursor-pointer' onChange={e => setIsPublished(e.target.checked)} />
