@@ -1,4 +1,4 @@
-# Quickblog - Full-Stack MERN Blog Application with AI Content Generation
+# Aether-Blog-App- Full-Stack MERN Blog Application with AI Content Generation
 
 A modern, feature-rich blog platform built with the MERN stack (MongoDB, Express.js, React.js, Node.js), featuring a fully secure administrative dashboard and integrated **AI-powered content generation** via OpenRouter.
 
